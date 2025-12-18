@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #1a1a1a;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        video {
+            width: 100%;
+            max-width: 640px;
+            background: #000;
+            border: 3px solid #4CAF50;
+            border-radius: 8px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .status {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            background: #333;
+        }
+        .error {
+            background: #f44336;
+        }
+        .success {
+            background: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎥 Simple Camera Test</h1>
+        <p>This tests your camera WITHOUT Agora SDK</p>
+        
+        <div id="status" class="status">Click "Start Camera" below</div>
+        
+        <video id="video" autoplay playsinline></video>
+        
+        <div>
+            <button onclick="startCamera()">Start Camera</button>
+            <button onclick="stopCamera()">Stop Camera</button>
+        </div>
+        
+        <h2>Debug Info:</h2>
+        <pre id="debug"></pre>
+    </div>
+
+    <script>
+        let stream = null;
+        const video = document.getElementById('video');
+        const status = document.getElementById('status');
+        const debug = document.getElementById('debug');
+
+        function log(message) {
+            console.log(message);
+            debug.textContent += message + '\n';
+        }
+
+        async function startCamera() {
+            try {
+                status.textContent = 'Requesting camera access...';
+                status.className = 'status';
+                
+                log('Requesting camera...');
+                
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { width: 640, height: 480 },
+                    audio: false 
+                });
+                
+                log('Camera granted!');
+                log('Stream tracks: ' + stream.getTracks().length);
+                
+                video.srcObject = stream;
+                
+                status.textContent = '✅ Camera is working! You should see yourself above.';
+                status.className = 'status success';
+                
+                log('Video element connected to stream');
+                
+            } catch (error) {
+                log('ERROR: ' + error.name + ' - ' + error.message);
+                status.textContent = '❌ Error: ' + error.message;
+                status.className = 'status error';
+                
+                if (error.name === 'NotAllowedError') {
+                    status.textContent += '\n\nYou need to allow camera access in browser settings!';
+                }
+            }
+        }
+
+        function stopCamera() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                video.srcObject = null;
+                status.textContent = 'Camera stopped';
+                status.className = 'status';
+                log('Camera stopped');
+            }
+        }
+
+        // Auto-start on load
+        window.onload = () => {
+            log('Page loaded. Browser: ' + navigator.userAgent);
+            log('MediaDevices supported: ' + !!navigator.mediaDevices);
+        };
+    </script>
+</body>
+</html>
