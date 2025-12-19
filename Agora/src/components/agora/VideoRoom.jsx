@@ -13,11 +13,9 @@ const VideoRoom = ({ channelName, uid }) => {
     useEffect(() => {
         const fetchToken = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/agora/token', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                const response = await fetch("http://host.docker.internal:3001/api/agora/token", {
+               method: "POST",
+               headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ channelName, uid }),
                 });
                 const data = await response.json();
