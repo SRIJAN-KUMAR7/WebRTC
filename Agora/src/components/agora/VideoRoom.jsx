@@ -19,6 +19,7 @@ const VideoRoom = ({ channelName, uid }) => {
                     body: JSON.stringify({ channelName, uid }),
                 });
                 const data = await response.json();
+                console.log(data);
                 console.log("VideoRoom: Token received", data.token);
                 setToken(data.token);
             } catch (error) {

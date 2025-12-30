@@ -13,15 +13,12 @@ import {
 const VideoPlayer = ({ channelName, token, uid }) => {
     // Get App ID from environment
     const APP_ID = import.meta.env.VITE_AGORA_APP_ID || import.meta.env.NEXT_PUBLIC_AGORA_APP_ID;
-
-    // Create tracks - these return { isLoading, localMicrophoneTrack }
     const { isLoading: isLoadingMic, localMicrophoneTrack } = useLocalMicrophoneTrack();
     const { isLoading: isLoadingCam, localCameraTrack } = useLocalCameraTrack();
 
-    // Check connection
-    const isConnected = useIsConnected();
+    const isConnected = useIsConnected();//connected?
 
-    // Join the channel
+
     useJoin(
         { appid: APP_ID, channel: channelName, token: token, uid: uid },
         true
