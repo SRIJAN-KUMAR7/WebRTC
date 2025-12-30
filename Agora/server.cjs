@@ -38,7 +38,6 @@ const generateAccessToken = (req, res) => {
     return res.status(400).json({ 'error': 'channel name is required' });
   }
 
-  // If uid is 0, we can use 0, but best to use what client sends or 0 for any
   const token = RtcTokenBuilder.buildTokenWithUid(APP_ID, APP_CERTIFICATE, channelName, uid, role, privilegeExpiredTs);
   return res.json({ 'token': token });
 };
